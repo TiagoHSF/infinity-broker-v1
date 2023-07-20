@@ -1,0 +1,58 @@
+<div class="xoperation">xOperation</div>
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div class="analise">
+    <div style="float: right"><i matSuffix class="ph ph-globe"></i></div>
+    <h1 class="titulo">OPERATION <i class="ph-thin ph-rocket"></i>
+    </h1>
+    <div *ngIf="analisando && !possivelEntrada" class="div-carregando">
+        <mat-spinner></mat-spinner>
+        <span>Analisando Pares... {{analises}}</span>
+    </div>
+    <div *ngIf="possivelEntrada && resultadoOperacao != undefined" class="div-carregando">
+        <span>Possível Entrada Encontrada!</span>
+        <span>Tempo Para: TEMPO AQUI</span>
+        <p>Resultado Análise: {{ resultadoOperacao[0] }}</p>
+        <p>Probabilidade: {{ resultadoOperacao[1] }}%</p>
+    </div>
+    <div *ngIf="!analisando">
+      <mat-form-field>
+        <mat-label>PARES</mat-label>
+        <mat-select [(ngModel)]="parSelecionado">
+          <mat-option *ngFor="let par of pares" [value]="par">{{
+            par
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>TEMPO</mat-label>
+        <mat-select [(ngModel)]="tempoSelecionado">
+          <mat-option *ngFor="let tempo of periodo" [value]="tempo">{{
+            tempo
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="div-analise">
+      <button
+      class="forex-button"
+        *ngIf="!analisando"
+        (click)="determinarChanceCallPut()"
+        [ngClass]="{ 'forex-button': !disableAnalise(), 'forex-button-disabled': disableAnalise() }"
+      >
+      <i class="ph-fill ph-rocket-launch"></i>
+        Iniciar Análise
+      </button>
+      <button 
+      class="forex-button" *ngIf="analisando && !possivelEntrada" (click)="pausarAnalise()">
+      <i class="ph-fill ph-rocket-launch"></i>
+        Pausar Análise
+      </button>
+      <button 
+      class="forex-button" *ngIf="possivelEntrada" (click)="continuarAnalise()">
+      <i class="ph-fill ph-rocket-launch"></i>
+        Continuar Análise
+      </button>
+    </div>
+  </div>
+</div>

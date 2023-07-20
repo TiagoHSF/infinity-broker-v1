@@ -1,0 +1,85 @@
+.titulo {
+    text-align: center;
+}
+
+.analise {
+    border-style: solid;
+    border-radius: 13px;
+    padding: 10px 10px 10px 10px;
+    margin-top: 10%;
+    background-color: #434141;
+    box-shadow: 0 0 50px rgb(0 0 0 / 100%);
+    border-color: transparent;
+    min-width: 30%;
+    min-height: 25%;
+    color: white;
+}
+
+.xoperation {
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 30px;
+    padding-left: 2%;
+    padding-top: 1%;
+}
+
+mat-form-field {
+    padding: 2px 20px 2px 2px;
+}
+
+.div-analise {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.forex-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .forex-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .forex-button i {
+    position: absolute;
+    left: 0;
+    transition: transform 0.8s ease, left 0.5s ease;
+  }
+  
+  .forex-button:hover i {
+    left: 100%;
+    transform: translateX(-100%);
+  }
+
+  .forex-button-disabled {
+    background-color: #4c4e50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .div-carregando {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
