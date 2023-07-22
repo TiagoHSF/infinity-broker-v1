@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { OperacaoDTO } from '../model/OperacaoDTO.model';
-import axios from 'axios';
-import { parse } from 'node-html-parser/dist/nodes/html';
-import { HTMLElement } from 'node-html-parser';
-import { MoedaEndpointService } from '../service/moeda-endpoint.service';
+import { Component, OnInit } from "@angular/core";
+import { OperacaoDTO } from "../model/OperacaoDTO.model";
+import axios from "axios";
+import { parse } from "node-html-parser/dist/nodes/html";
+import { HTMLElement } from "node-html-parser";
+import { MoedaEndpointService } from "../service/moeda-endpoint.service";
+import { ParDTO } from "../model/ParDTO.model";
 
 @Component({
-  selector: 'app-main-operation',
-  templateUrl: './main-operation.component.html',
-  styleUrls: ['./main-operation.component.scss'],
+  selector: "app-main-operation",
+  templateUrl: "./main-operation.component.html",
+  styleUrls: ["./main-operation.component.scss"],
 })
 export class MainOperationComponent implements OnInit {
+  
   analisando = false;
 
-  pares = ['USD/BRL', 'AUD/CAD'];
+  // pares: ParDTO[] = [];
+  pares = ['EUR/USD', 'CAD/JPY', 'EUR/JPY']
+
   periodo = [
     '1m',
     '2m',
@@ -40,24 +44,42 @@ export class MainOperationComponent implements OnInit {
   constructor(private moedaEndpointService: MoedaEndpointService) {}
 
   ngOnInit(): void {
-    const url = 'wss://dfx239a.dailyfx.com/lightstreamer';
+    // const url =
+    //   "wss://feeds.leadercapital.net/signalR/signalr/connect?transport=webSockets&clientProtocol=1.5&connectionToken=3NMT1x3w4yQDkMI5OHwswk0%2Bl0%2BJz0wfFgO2KX00O4R5oxkAouyaAF1RGICqHG6RTUcbwO8vLPtFHoAEVLlUcwYISfmExkt8Dblz%2FeS%2FW5wRnP0D%2FNbO3NtvcEq68WIW&connectionData=%5B%7B%22name%22%3A%22quoteshub%22%7D%5D&tid=0";
 
-    const socket = new WebSocket(url);
-    
-    socket.addEventListener('open', () => {
-      console.log('Conexão estabelecida');
-    
-      // Enviar uma mensagem para o servidor
-      socket.send('Olá, servidor!');
-    });
-    
-    socket.addEventListener('message', (event) => {
-      // console.log('Mensagem recebida:', event.data);
-    });
-    
-    // socket.addEventListener('close', () => {
-    //   console.log('Conexão fechada');
+    // const socket = new WebSocket(url);
+
+    // socket.addEventListener("open", () => {
+    //   console.log("Conexão estabelecida");
+    //   socket.send("Olá, servidor!");
     // });
+
+    // socket.addEventListener("message", (event) => {
+    //   this.pares = [];
+    //   const parsedObject = JSON.parse(event.data);
+    //   for (let moeda of parsedObject.M[0]["A"][0]) {
+    //     if(moeda.Symbol == 'EURUSD' ||
+    //     moeda.Symbol == 'GBPUSD' ||
+    //     moeda.Symbol == 'USDJPY' ||
+    //     moeda.Symbol == 'USDCHF' ||
+    //     moeda.Symbol == 'AUDUSD' ||
+    //     moeda.Symbol == 'USDCAD' ||
+    //     moeda.Symbol == 'NZDUSD'){
+    //       let par = {
+    //         price: moeda.Buy,
+    //         moment: moeda.Time,
+    //         symbol: moeda.Symbol,
+    //         dailyHigh: moeda.DailyHigh,
+    //         dailyLow: moeda.DailyLow,
+    //       } as ParDTO;
+    //       this.pares.push(par)
+    //     }
+    //   }
+    // });
+
+    // // socket.addEventListener('close', () => {
+    // //   console.log('Conexão fechada');
+    // // });
   }
 
   resultadoOperacao: [string, number] | undefined;
@@ -71,7 +93,7 @@ export class MainOperationComponent implements OnInit {
         this.analises = this.analises + 1;
         this.analisando = true;
 
-        this.parSelecionado = this.parSelecionado.replace(/[^a-zA-Z0-9]/g, '');
+        this.parSelecionado = this.parSelecionado.replace(/[^a-zA-Z0-9]/g, "");
 
         this.moedaEndpointService
           .buscarHistoricoMoeda(this.parSelecionado, this.tempoSelecionado)
@@ -95,7 +117,7 @@ export class MainOperationComponent implements OnInit {
 
         // Verificar se há informações suficientes no histórico
         if (this.historicoMoeda.length < 2) {
-          chance = 'Indeterminado';
+          chance = "Indeterminado";
           probabilidade = 0.5;
         } else {
           const tendenciaAtual = this.calcularTendenciaAtual();
@@ -107,40 +129,40 @@ export class MainOperationComponent implements OnInit {
 
           // Aplicar técnicas e regras de análise para determinar a chance de Call ou Put
           if (
-            tendenciaAtual === 'Alta' &&
-            tendenciaAnterior === 'Alta' &&
+            tendenciaAtual === "Alta" &&
+            tendenciaAnterior === "Alta" &&
             rsi > 70 &&
             mfi > 80 &&
-            bandasBollinger === 'Sobrecompra' &&
-            macd === 'Sinal de Venda'
+            bandasBollinger === "Sobrecompra" &&
+            macd === "Sinal de Venda"
           ) {
-            chance = 'Put';
+            chance = "Put";
             probabilidade = 0; // Exemplo de probabilidade alta em uma tendência de alta contínua com indicadores adicionais
           } else if (
-            tendenciaAtual === 'Baixa' &&
-            tendenciaAnterior === 'Baixa' &&
+            tendenciaAtual === "Baixa" &&
+            tendenciaAnterior === "Baixa" &&
             rsi < 30 &&
             mfi < 20 &&
-            bandasBollinger === 'Sobrevenda' &&
-            macd === 'Sinal de Compra'
+            bandasBollinger === "Sobrevenda" &&
+            macd === "Sinal de Compra"
           ) {
-            chance = 'Call';
+            chance = "Call";
             probabilidade = 0; // Exemplo de probabilidade alta em uma tendência de baixa contínua com indicadores adicionais
           } else {
-            chance = 'Indeterminado';
+            chance = "Indeterminado";
             probabilidade = 0;
           }
         }
 
         this.resultadoOperacao = [chance, probabilidade];
-        if (chance != 'Indeterminado') {
+        if (chance != "Indeterminado") {
           this.possivelEntrada = true;
         }
       }
     }, 10000);
   }
 
-  private calcularTendenciaAtual(): 'Alta' | 'Baixa' | 'Neutra' {
+  private calcularTendenciaAtual(): "Alta" | "Baixa" | "Neutra" {
     // Calcular a média móvel simples (SMA) para o período desejado
     const periodoSMA = 5; // Número de períodos para a média móvel simples
     const valores = this.historicoMoeda
@@ -153,15 +175,15 @@ export class MainOperationComponent implements OnInit {
 
     // Determinar a tendência com base na comparação entre o valor atual e a média móvel
     if (valorAtual > mediaSMA) {
-      return 'Alta';
+      return "Alta";
     } else if (valorAtual < mediaSMA) {
-      return 'Baixa';
+      return "Baixa";
     } else {
-      return 'Neutra';
+      return "Neutra";
     }
   }
 
-  private calcularTendenciaAnterior(): 'Alta' | 'Baixa' | 'Neutra' {
+  private calcularTendenciaAnterior(): "Alta" | "Baixa" | "Neutra" {
     const periodoSMA = 5; // Número de períodos para a média móvel simples
     const valores = this.historicoMoeda
       .slice(-periodoSMA * 2, -periodoSMA)
@@ -172,11 +194,11 @@ export class MainOperationComponent implements OnInit {
       this.historicoMoeda[this.historicoMoeda.length - 2].valor;
 
     if (valorAnterior > mediaSMA) {
-      return 'Alta';
+      return "Alta";
     } else if (valorAnterior < mediaSMA) {
-      return 'Baixa';
+      return "Baixa";
     } else {
-      return 'Neutra';
+      return "Neutra";
     }
   }
 
@@ -236,7 +258,7 @@ export class MainOperationComponent implements OnInit {
     return mfi;
   }
 
-  private calcularBandasBollinger(): 'Sobrecompra' | 'Sobrevenda' | 'Neutra' {
+  private calcularBandasBollinger(): "Sobrecompra" | "Sobrevenda" | "Neutra" {
     const periodoBB = 20; // Número de períodos para o cálculo das Bandas de Bollinger
     const desvioPadrao = this.calcularDesvioPadrao(periodoBB);
     let valores: number[] = [];
@@ -251,15 +273,15 @@ export class MainOperationComponent implements OnInit {
     const bandaInferior = media - 2 * desvioPadrao;
 
     if (valorAtual > bandaSuperior) {
-      return 'Sobrecompra';
+      return "Sobrecompra";
     } else if (valorAtual < bandaInferior) {
-      return 'Sobrevenda';
+      return "Sobrevenda";
     } else {
-      return 'Neutra';
+      return "Neutra";
     }
   }
 
-  private calcularMACD(): 'Sinal de Compra' | 'Sinal de Venda' | 'Neutro' {
+  private calcularMACD(): "Sinal de Compra" | "Sinal de Venda" | "Neutro" {
     const periodoCurto = 12; // Período curto para o cálculo do MACD
     const periodoLongo = 26; // Período longo para o cálculo do MACD
     const periodoSinal = 9; // Período para o cálculo do sinal do MACD
@@ -280,11 +302,11 @@ export class MainOperationComponent implements OnInit {
     const mediaSinal = this.calcularMedia(periodoSinal, valoresSinal);
 
     if (macd > mediaSinal) {
-      return 'Sinal de Compra';
+      return "Sinal de Compra";
     } else if (macd < mediaSinal) {
-      return 'Sinal de Venda';
+      return "Sinal de Venda";
     } else {
-      return 'Neutro';
+      return "Neutro";
     }
   }
 
@@ -321,8 +343,8 @@ export class MainOperationComponent implements OnInit {
   pausarAnalise() {
     this.analisando = false;
     this.resultadoOperacao = undefined;
-    this.parSelecionado = '';
-    this.tempoSelecionado = '';
+    this.parSelecionado = "";
+    this.tempoSelecionado = "";
     this.analises = 0;
   }
 

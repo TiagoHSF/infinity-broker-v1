@@ -1,4 +1,4 @@
-<div class="xoperation">xOperation</div>
+<!-- <div class="xoperation">xOperation</div>
 <div fxLayout="row" fxLayoutAlign="center center">
   <div class="analise">
     <div style="float: right"><i matSuffix class="ph ph-globe"></i></div>
@@ -19,7 +19,7 @@
         <mat-label>PARES</mat-label>
         <mat-select [(ngModel)]="parSelecionado">
           <mat-option *ngFor="let par of pares" [value]="par">{{
-            par
+            par.symbol
           }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -55,4 +55,19 @@
       </button>
     </div>
   </div>
+</div> -->
+
+
+<div class="container" fxLayout="column" fxLayoutGap="10px">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" style="height: 100%;">
+    <div style="border-right: 1px solid #ccc; padding-right: 10px;" fxFlex="20">
+      <mat-list>
+        <mat-list-item *ngFor="let par of pares">{{ par }}</mat-list-item>
+      </mat-list>
+    </div>
+    <div fxFlex="80" class="grafico">
+      GRÁFICO
+    </div>
+  </div>
 </div>
+
